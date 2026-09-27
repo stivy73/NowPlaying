@@ -157,9 +157,9 @@ fun stripSmali(from: File) {
 
 fun modifyApktoolYml(apktoolYml: File) {
     val yaml = apktoolYml.readText()
-        .replaceGroup("  minSdkVersion: '(.*)'", 1, project.extra.get("minSdk").toString())
-        .replaceGroup("  targetSdkVersion: '(.*)'", 1, project.extra.get("targetSdk").toString())
-        .replaceGroup("  versionCode: '(.*)'", 1, project.extra.get("versionCode").toString())
+        .replaceGroup("  minSdkVersion: (.*)", 1, project.extra.get("minSdk").toString())
+        .replaceGroup("  targetSdkVersion: (.*)", 1, project.extra.get("targetSdk").toString())
+        .replaceGroup("  versionCode: (.*)", 1, project.extra.get("versionCode").toString())
         .replaceGroup("  versionName: (.*)", 1, project.extra.get("versionName").toString())
     apktoolYml.writeText(yaml)
 }
