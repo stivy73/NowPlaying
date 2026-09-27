@@ -60,7 +60,7 @@ abstract class XposedHooks {
                 AudioRecordHooks(),
                 AudioRecordingConfigurationHooks(),
                 ComponentNameHooks(),
-                ContextHooks(),
+                if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) ContextHooks() else null,
                 ContextImplHooks(),
                 CpuUtilsHooks(),
                 DeviceConfigHooks(),
@@ -71,7 +71,7 @@ abstract class XposedHooks {
                 GellerHooks(),
                 JobSchedulerHooks(context),
                 JobInfoHooks(),
-                HistoryActivityHooks(),
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R) HistoryActivityHooks() else null,
                 InjectionHooks(),
                 LangIdJniModelLessHooks(),
                 LearningControllerJniHooks(),
@@ -87,12 +87,12 @@ abstract class XposedHooks {
                 ShortcutManagerHooks(context),
                 SqliteHooks(context),
                 SoundTriggerHooks(),
-                ThreadPoolExecutorHooks(),
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R) ThreadPoolExecutorHooks() else null,
                 UserManagerHooks(),
                 UriBuilderHooks(),
                 UriMatcherHooks(),
-                ViewHooks()
-            ).forEach {
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R) ViewHooks() else null
+            ).filterNotNull().forEach {
                 it.init()
             }
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
