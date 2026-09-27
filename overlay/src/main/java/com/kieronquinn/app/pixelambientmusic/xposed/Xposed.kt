@@ -1,5 +1,6 @@
 package com.kieronquinn.app.pixelambientmusic.xposed
 
+import android.util.Log
 import com.kieronquinn.app.pixelambientmusic.xposed.Xposed.MethodHookParam
 import java.lang.reflect.Member
 import java.lang.reflect.Method
@@ -13,6 +14,8 @@ import de.robv.android.xposed.XC_MethodReplacement as HookXC_MethodReplacement
 import de.robv.android.xposed.XposedBridge as HookXposedBridge
 
 object Xposed {
+
+    private const val TAG = "NowPlayingHooks"
 
     private var _USE_PINE: Boolean? = null
 
@@ -103,6 +106,7 @@ object Xposed {
             HookXposedBridge()
             false
         }catch (e: UnsatisfiedLinkError) {
+            Log.w(TAG, "LSPlant unavailable; falling back to Pine", e)
             true
         }.also {
             _USE_PINE = it
