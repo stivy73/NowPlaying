@@ -4,6 +4,10 @@
 
 Now Playing is a modified version of Android System Intelligence, running only the Now Playing (music recognition) component on other devices. It is only usable with the Ambient Music Mod app.
 
+## Personal fork: Android modernization
+
+The [`android-modernization`](https://github.com/stivy73/NowPlaying/tree/android-modernization) branch of this personal fork contains targeted recognition callback fixes and Android 16 hook mitigation. It is developed alongside the matching [AmbientMusicMod fork](https://github.com/stivy73/AmbientMusicMod/tree/android-modernization); builds of both apps must use the same signing key. The [recognition fix report](docs/recognition-reliability-2026-09-27.md) records changes, tests, and remaining limits. The native Pine/ART crash has not been confirmed resolved by long term device testing.
+
 **If you are trying to install Now Playing, please use the links on the Ambient Music Mod repo for prebuilt APKs**
 
 ## Building
