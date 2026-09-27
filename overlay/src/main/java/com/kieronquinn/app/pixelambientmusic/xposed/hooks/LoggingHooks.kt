@@ -5,6 +5,8 @@ import com.kieronquinn.app.pixelambientmusic.components.recogniser.MusicRecognis
 import com.kieronquinn.app.pixelambientmusic.components.recogniser.MusicRecogniser.SkippedReason
 import com.kieronquinn.app.pixelambientmusic.config.DeviceConfigOverrides
 import com.kieronquinn.app.pixelambientmusic.model.RecognitionMetadata
+import com.kieronquinn.app.pixelambientmusic.model.RecognitionFailure
+import com.kieronquinn.app.pixelambientmusic.model.RecognitionFailureReason
 import com.kieronquinn.app.pixelambientmusic.model.RecognitionSource
 import com.kieronquinn.app.pixelambientmusic.xposed.XposedHooks
 import java.lang.reflect.Modifier
@@ -31,6 +33,9 @@ class LoggingHooks : XposedHooks() {
             "Skipping recognition due to ongoing phone call"
         private const val MESSAGE_SKIPPED_SYSTEM_USER =
             "Skipping recognition. System user not in foreground."
+        // Verified in the supported base APK: pvy reports this through (String, Object).
+        private const val MESSAGE_SKIPPED_NO_MUSIC =
+            "Music recognition was skipped, because secondary music detector score below threshold (= %s)"
 
         /**
          *  Same method as in [InjectionHooks.findInjectionClass], get the injector and then the
@@ -283,6 +288,11 @@ class LoggingHooks : XposedHooks() {
     private fun any_v(message: String, format1: Any?) = MethodHook {
         if(message == MESSAGE_SKIPPED_AUDIO) {
             MusicRecogniser.onRecognitionSkipped(SkippedReason.MUSIC, RecognitionSource.NNFP)
+        }else if(message == MESSAGE_SKIPPED_NO_MUSIC) {
+            // The recognizer returns without calling NnfpRecognizer.recognize in this path.
+            MusicRecogniser.onRecognitionFailed(RecognitionFailure(
+                RecognitionFailureReason.NoMatch, RecognitionSource.NNFP, null
+            ))
         }
         log { String.format(message, format1) }
         MethodResult.Skip<Void>()

@@ -4,6 +4,7 @@ import android.os.RemoteException
 import com.kieronquinn.app.pixelambientmusic.IRecognitionCallback
 import com.kieronquinn.app.pixelambientmusic.model.*
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  *  Wrapper for interfacing with and responding to NnfpRecognizer & MusicRecognitionManager events.
@@ -14,7 +15,8 @@ import java.util.*
 object MusicRecogniser {
 
     private const val METADATA_TIMEOUT = 500L
-    private val callbacks = HashMap<String, Callback>()
+    // Registration/removal runs on Binder threads while recognition dispatches on worker threads.
+    private val callbacks = ConcurrentHashMap<String, Callback>()
     private var runningSource: RecognitionSource? = null
     private var state: State = State.IDLE
     private var lastMetadata: RecognitionMetadata? = null
@@ -99,7 +101,7 @@ object MusicRecogniser {
         }
         val recognitionFailure = RecognitionFailure(recognitionFailureReason, source, null)
         runWithCallbacks { callback, metadata ->
-            if(metadata.recognitionSource == RecognitionSource.NNFP && !force){
+            if(metadata.recognitionSource != RecognitionSource.NNFP && !force){
                 return@runWithCallbacks
             }
             callback.onRecognitionFailed(recognitionFailure)

@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    testImplementation("junit:junit:4.13.2")
     //Refer to code from system stubs + manifest code stubs, but don't include in APK
     compileOnly(project(mapOf("path" to ":systemstubs")))
     implementation(project(mapOf("path" to ":leveldb")))
